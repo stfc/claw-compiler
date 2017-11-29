@@ -262,7 +262,6 @@ public class ClawX2T {
     }
 
     // Read the configuration file
-    if(recipeScript == null) {
     try {
       Configuration.get().load(configuration_path, configuration_file);
       Configuration.get().setUserDefinedTarget(target_option);
@@ -279,7 +278,6 @@ public class ClawX2T {
       error("internal", 0, 0, ex.getMessage());
       return;
     }
-    }
 
     // Force pure option
     if(cmd.hasOption("fp")) {
@@ -291,6 +289,7 @@ public class ClawX2T {
       System.out.println("Creating external translator for script: " + recipeScript);
       ClawExternalTranslatorDriver pythonDriver = 
           new ClawExternalTranslatorDriver(recipeScript, input, xcmlOutput);
+      pythonDriver.analyze();
       pythonDriver.transform();
 
     } else {
@@ -309,6 +308,7 @@ public class ClawX2T {
     }
 
     // Decompile XcodeML/F to target language
+    System.out.println("Getting OMNI backend...");
     OmniBackendDriver backend;
     if(Configuration.get().getCurrentTarget() == Target.FPGA) {
       // TODO remove when supported
