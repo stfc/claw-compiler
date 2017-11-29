@@ -243,7 +243,7 @@ public class ClawX2T {
     }
 
     if(cmd.hasOption("script")) {
-	recipeScript = cmd.getOptionValue("s");
+	recipeScript = cmd.getOptionValue("script");
 	System.out.println("Recipe script: " + recipeScript);
     }
 
@@ -288,6 +288,7 @@ public class ClawX2T {
 
     // Call the translator driver to apply transformation on XcodeML/F
     if(recipeScript != null) {
+      System.out.println("Creating external translator for script: " + recipeScript);
       ClawExternalTranslatorDriver pythonDriver = 
           new ClawExternalTranslatorDriver(recipeScript, input, xcmlOutput);
       pythonDriver.transform();

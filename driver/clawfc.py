@@ -1,5 +1,17 @@
 
-CLASSPATH = "/home/kbc59144/MyInstalls/share/xcalablemp/om-exc-tools.jar:/home/kbc59144/MyInstalls/share/xcalablemp/om-common.jar:/home/kbc59144/MyInstalls/share/xcalablemp/om-f-back.jar:/home/kbc59144/MyInstalls/share/xcalablemp/om-c-back.jar:/home/kbc59144/MyInstalls/share/claw/om-cx2x-claw.jar:/home/kbc59144/MyInstalls/share/claw/commons-cli.jar:/home/kbc59144/MyInstalls/share/claw/om-cx2x-xcodeml.jar:/home/kbc59144/MyInstalls/share/claw/antlr4.jar:/home/kbc59144/MyInstalls/share/claw/antlr4-runtime.jar"
+OMNI_JAR_FILES = ["/home/kbc59144/MyInstalls/share/xcalablemp/om-exc-tools.jar",
+                  "/home/kbc59144/MyInstalls/share/xcalablemp/om-common.jar",
+                  "/home/kbc59144/MyInstalls/share/xcalablemp/om-f-back.jar",
+                  "/home/kbc59144/MyInstalls/share/xcalablemp/om-c-back.jar"]
+CLAW_JAR_FILES = ["/home/kbc59144/MyInstalls/share/claw/om-cx2x-claw.jar",
+                  "/home/kbc59144/MyInstalls/share/claw/commons-cli.jar",
+                  "/home/kbc59144/MyInstalls/share/claw/om-cx2x-xcodeml.jar",
+                  "/home/kbc59144/MyInstalls/share/claw/antlr4.jar",
+                  "/home/kbc59144/MyInstalls/share/claw/antlr4-runtime.jar"]
+JYTHON_JAR = "/home/kbc59144/MyInstalls/jython2.7.0/jython.jar"
+
+JAR_FILES = OMNI_JAR_FILES + CLAW_JAR_FILES + [JYTHON_JAR]
+CLASS_PATH = ":".join(JAR_FILES)
 
 CLAW_CONFIG_FILE = "/home/kbc59144/MyInstalls/etc"
 NUM_OUTPUT_COLUMNS = 80
@@ -28,7 +40,7 @@ def claw_driver(argv):
 
     # Then transform this XcodeML representation using CLAW and de-compile
     # it back to Fortran
-    call(["/usr/bin/java", "-Xmx200m", "-Xms200m", "-cp", CLASSPATH,
+    call(["/usr/bin/java", "-Xmx200m", "-Xms200m", "-cp", CLASS_PATH,
           "claw.ClawX2T", "--config-path={0}".format(CLAW_CONFIG_FILE),
           "--schema=/home/kbc59144/MyInstalls/etc/claw_config.xsd",
           "-w", str(NUM_OUTPUT_COLUMNS), "-l",
@@ -36,7 +48,7 @@ def claw_driver(argv):
           "-M/home/kbc59144/MyInstalls/fincludes",
           "-o", "claw_5f_example_f90_out.xml",
           "-f", fortran_file,
-          "-s", script_file,
+          "-script", script_file,
           xml_file])
 
 

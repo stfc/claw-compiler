@@ -1,7 +1,7 @@
 ''' jython module for testing interoperation with Java '''
 
 # Import the Java interface that this module implements
-from claw.external.pythontransform import PythonInterface
+from claw.python import PythonInterface
 
 class ClawTransform(PythonInterface):
 
