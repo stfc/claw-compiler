@@ -3,6 +3,81 @@
 # Import the Java interface that this module implements
 from claw.python import PythonInterface
 
+def run_script(script_name, xcodeml_ast):
+    '''
+    Imports the supplied python module and runs the 'trans'
+    function defined within it.
+    This code is lifted wholesale from PSyclone and I would
+    have used it from PSyclone but that requires some
+    refactoring.
+
+    :param str script_name: fully-qualified name of Python script
+                            to import
+    :param xcodeml_ast:
+    :raises: lots of things
+    '''
+    import os
+    import sys
+    sys_path_appended = False
+    try:
+        # a script has been provided
+        filepath, filename = os.path.split(script_name)
+        if filepath:
+            # a path to a file has been provided
+            # we need to check the file exists
+            if not os.path.isfile(script_name):
+                raise IOError("script file '{0}' not found".
+                              format(script_name))
+            # it exists so we need to add the path to the python
+            # search path
+            sys_path_appended = True
+            sys.path.append(filepath)
+        filename, fileext = os.path.splitext(filename)
+        if fileext != '.py':
+            raise GenerationError(
+                "generator: expected the script file '{0}' to have "
+                "the '.py' extension".format(filename))
+        try:
+            transmod = __import__(filename)
+        except ImportError:
+            raise GenerationError(
+                "generator: attempted to import '{0}' but script file "
+                "'{1}' has not been found".
+                format(filename, script_name))
+        except SyntaxError:
+            raise GenerationError(
+                "generator: attempted to import '{0}' but script file "
+                "'{1}' is not valid python".
+                format(filename, script_name))
+        if callable(getattr(transmod, 'trans', None)):
+            try:
+                xcodeml_ast = transmod.trans(xcodeml_ast)
+            except Exception:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                lines = traceback.format_exception(exc_type, exc_value,
+                                                   exc_traceback)
+                e_str = '{\n' +\
+                    ''.join('    ' + line for line in lines[2:]) + '}'
+                raise GenerationError(
+                    "Generator: script file '{0}'\nraised the "
+                    "following exception during execution "
+                    "...\n{1}\nPlease check your script".format(
+                        script_name, e_str))
+        else:
+            raise GenerationError(
+                "generator: attempted to import '{0}' but script file "
+                "'{1}' does not contain a 'trans()' function".
+                format(filename, script_name))
+    except Exception as msg:
+        if sys_path_appended:
+            os.sys.path.pop()
+        raise msg
+    if sys_path_appended:
+        os.sys.path.pop()
+
+    return xcodeml_ast
+
+
 class ClawTransform(PythonInterface):
 
     ''' Wrapper for performing CLAW transformations '''
@@ -22,12 +97,12 @@ class ClawTransform(PythonInterface):
         :param str script_name: Python script to apply to AST
         :param kernel_ast: the AST of the code to transform
         :type kernel_ast: claw.tatsu.xcodeml.xnode.common.XcodeProgram
+        :return: Transformed AST
+        :rtype: claw.tatsu.xcodeml.xnode.common.XcodeProgram
         '''
         print "Here we would import {0} and apply it to {1}".\
             format(script_name, "some ast")
-        # Mess with the state of the supplied (Java) object
-        #kernel_ast.root_node = 7
-        # Call a method on the supplied Java object
-        #kernel_ast.PrintNode()
+        transformed_ast = run_script(script_name, kernel_ast)
 
-        return kernel_ast
+        return transformed_ast
+
