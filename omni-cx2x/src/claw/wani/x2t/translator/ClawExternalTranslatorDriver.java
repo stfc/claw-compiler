@@ -64,9 +64,9 @@ public class ClawExternalTranslatorDriver {
     // The string passed to the factory here is just an example of
     // passing an argument in to the constructor - it serves no
     // purpose!
-    System.out.println("Creating transform object");
+    System.out.println("Creating transform object...");
     _transform = _factory.create("my_transform");
-
+    System.out.println("...constructor finished!");
   }
 
   /**

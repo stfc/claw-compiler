@@ -24,10 +24,10 @@ class ClawTransform(PythonInterface):
         :type kernel_ast: claw.tatsu.xcodeml.xnode.common.XcodeProgram
         '''
         print "Here we would import {0} and apply it to {1}".\
-            format(script_name, str(kernel_ast))
+            format(script_name, "some ast")
         # Mess with the state of the supplied (Java) object
-        kernel_ast.root_node = 7
+        #kernel_ast.root_node = 7
         # Call a method on the supplied Java object
-        kernel_ast.PrintNode()
+        #kernel_ast.PrintNode()
 
         return kernel_ast
