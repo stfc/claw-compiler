@@ -12,6 +12,7 @@ import claw.tatsu.xcodeml.backend.OmniBackendDriver;
 import claw.wani.report.ClawTransformationReport;
 import claw.wani.x2t.configuration.Configuration;
 import claw.wani.x2t.translator.ClawTranslatorDriver;
+import claw.wani.x2t.translator.ClawExternalTranslatorDriver;
 import exc.xcodeml.XcodeMLtools_Fmod;
 import org.apache.commons.cli.*;
 import xcodeml.util.XmOption;
@@ -113,6 +114,8 @@ public class ClawX2T {
             "has to be transformed.");
     options.addOption("r", "report", true,
         "generate the transformation report.");
+    options.addOption("script", "python-script", true,
+		      "Python optimisation script to apply");
     return options;
   }
 
@@ -145,6 +148,7 @@ public class ClawX2T {
     String directive_option = null;
     String configuration_file = null;
     String configuration_path = null;
+    String recipeScript = null;
     int maxColumns = 0;
     //boolean forcePure = false;
 
@@ -238,6 +242,12 @@ public class ClawX2T {
       return;
     }
 
+    if(cmd.hasOption("script")) {
+	recipeScript = cmd.getOptionValue("s");
+	System.out.println("Recipe script: " + recipeScript);
+    }
+
+    // Get the input XcodeML file to transform
     if(cmd.getArgs().length == 0) {
       input = null;
     } else {
@@ -252,6 +262,7 @@ public class ClawX2T {
     }
 
     // Read the configuration file
+    if(recipeScript == null) {
     try {
       Configuration.get().load(configuration_path, configuration_file);
       Configuration.get().setUserDefinedTarget(target_option);
@@ -268,6 +279,7 @@ public class ClawX2T {
       error("internal", 0, 0, ex.getMessage());
       return;
     }
+    }
 
     // Force pure option
     if(cmd.hasOption("fp")) {
@@ -275,17 +287,24 @@ public class ClawX2T {
     }
 
     // Call the translator driver to apply transformation on XcodeML/F
-    ClawTranslatorDriver translatorDriver =
-        new ClawTranslatorDriver(input, xcmlOutput);
-    translatorDriver.analyze();
-    translatorDriver.transform();
-    translatorDriver.flush();
+    if(recipeScript != null) {
+      ClawExternalTranslatorDriver pythonDriver = 
+          new ClawExternalTranslatorDriver(recipeScript, input, xcmlOutput);
+      pythonDriver.transform();
 
-    // Produce report
-    if(cmd.hasOption("r")) {
-      ClawTransformationReport report =
-          new ClawTransformationReport(cmd.getOptionValue("r"));
-      report.generate(args, translatorDriver);
+    } else {
+      ClawTranslatorDriver translatorDriver =
+          new ClawTranslatorDriver(input, xcmlOutput);
+      translatorDriver.analyze();
+      translatorDriver.transform();
+      translatorDriver.flush();
+
+      // Produce report
+      if(cmd.hasOption("r")) {
+        ClawTransformationReport report =
+            new ClawTransformationReport(cmd.getOptionValue("r"));
+        report.generate(args, translatorDriver);
+      }
     }
 
     // Decompile XcodeML/F to target language
