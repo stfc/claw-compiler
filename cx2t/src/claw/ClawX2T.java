@@ -261,6 +261,7 @@ public class ClawX2T {
     }
 
     // Read the configuration file
+    if(recipeScript == null) {
     try {
       Configuration.get().load(configuration_path, configuration_file);
       Configuration.get().setUserDefinedTarget(target_option);
@@ -276,6 +277,7 @@ public class ClawX2T {
     } catch(Exception ex) {
       error("internal", 0, 0, ex.getMessage());
       return;
+    }
     }
 
     // Force pure option
