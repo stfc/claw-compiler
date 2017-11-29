@@ -1,4 +1,4 @@
-package claw.external.pythontransform;
+package claw.python;
 
 
 import claw.tatsu.xcodeml.xnode.common.XcodeProgram;

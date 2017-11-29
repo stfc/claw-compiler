@@ -19,8 +19,8 @@ import claw.wani.transformation.ClawTransformation;
 import claw.wani.x2t.configuration.Configuration;
 import claw.wani.x2t.configuration.GroupConfiguration;
 import xcodeml.util.XmOption;
-import claw.external.pythontransform.PythonInterface;
-import claw.external.pythontransform.PythonFactory;
+import claw.python.PythonInterface;
+import claw.python.PythonFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -59,17 +59,18 @@ public class ClawExternalTranslatorDriver {
     _transformScript = transScript;
     _xcodemlInputFile = xcodemlInputFile;
     _xcodemlOutputFile = xcodemlOutputFile;
-
+    System.out.println("Creating factory object");
     _factory = new PythonFactory();
     // The string passed to the factory here is just an example of
     // passing an argument in to the constructor - it serves no
     // purpose!
+    System.out.println("Creating transform object");
     _transform = _factory.create("my_transform");
 
   }
 
   /**
-   * Analysis the XcodeML/F directives and categorized them in corresponding
+   * Analyse the XcodeML/F directives and categorize them in corresponding
    * transformation with the help of the translator.
    */
   public void analyze() {
@@ -102,6 +103,7 @@ public class ClawExternalTranslatorDriver {
         _translationUnit.write(_xcodemlOutputFile, ClawConstant.INDENT_OUTPUT);
         return;
       }
+      System.out.println("Calling trans on transform object with script " + _transformScript);
       XcodeProgram _transformedUnit = _transform.trans(_transformScript,
 						       _translationUnit);
 

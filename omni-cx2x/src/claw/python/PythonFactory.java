@@ -1,7 +1,7 @@
-package claw.external.pythontransform;
+package claw.python;
 
 /* The Java definition of the interface implemented in Python */
-import claw.external.pythontransform.PythonInterface;
+import claw.python.PythonInterface;
 
 /* These modules are provided by Jython */
 import org.python.core.PyObject;
