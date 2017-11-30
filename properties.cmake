@@ -81,3 +81,5 @@ set(FPP "${CMAKE_Fortran_COMPILER}")
 set(CPP_OPT "${FPPFLAGS}")
 
 set(ANT_FLAGS "-quiet")
+
+set(JYTHON "${JYTHON_JAR_INSTALL_LOCATION}/jython.jar")
