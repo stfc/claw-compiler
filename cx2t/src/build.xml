@@ -29,6 +29,7 @@
         <pathelement path="${antlr4.runtime.dep}"/>
         <pathelement path="${commoncli.dep}"/>
         <pathelement path="${omni.exec.dep}"/>
+        <pathelement path="${jython.dep}"/>
     </path>
 
     <path id="antlr.path">
@@ -66,7 +67,8 @@
     <target name="compile" depends="common.resolve, antlr"
             description="compile the source">
         <javac includeantruntime="false" srcdir="${src.base}"
-               destdir="${build.dir}" classpathref="build.path"/>
+               destdir="${build.dir}" classpathref="build.path"
+               debug="on" debuglevel="lines,source"/>
     </target>
 
     <!-- Pacakge compiled files into their own library -->
@@ -81,7 +83,9 @@
         <!-- CLAW X2T WANI -->
         <jar jarfile="${dist.dir}/${claw.wani.jar}" basedir="${build.dir}"
              includes="claw/ClawX2T.class claw/ClawVersion.class claw/wani/**"/>
-        <!-- -->
+        <!-- CLAW-Python interface -->
+        <jar jarfile="${dist.dir}/${claw.translator.jar}" basedir="${build.dir}"
+             includes="claw/ClawX2T.class claw/ClawVersion.class claw/wani/** claw/shenron/** claw/python/**"/>
         <jar jarfile="${dist.dir}/${external.jar}" basedir="${build.dir}"
              includes="external/**"/>
     </target>
