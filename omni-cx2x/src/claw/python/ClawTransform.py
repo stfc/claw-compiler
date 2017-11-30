@@ -1,7 +1,9 @@
 ''' jython module for testing interoperation with Java '''
 
-# Import the Java interface that this module implements
-from claw.python import PythonInterface
+# Import the Java interface that this module implements as well
+# as the exception class that it raises
+from claw.python import PythonInterface, PythonException
+
 
 def run_script(script_name, xcodeml_ast):
     '''
@@ -26,26 +28,26 @@ def run_script(script_name, xcodeml_ast):
             # a path to a file has been provided
             # we need to check the file exists
             if not os.path.isfile(script_name):
-                raise IOError("script file '{0}' not found".
-                              format(script_name))
+                raise PythonException("script file '{0}' not found".
+                                      format(script_name))
             # it exists so we need to add the path to the python
             # search path
             sys_path_appended = True
             sys.path.append(filepath)
         filename, fileext = os.path.splitext(filename)
         if fileext != '.py':
-            raise GenerationError(
+            raise PythonException(
                 "generator: expected the script file '{0}' to have "
                 "the '.py' extension".format(filename))
         try:
             transmod = __import__(filename)
         except ImportError:
-            raise GenerationError(
+            raise PythonException(
                 "generator: attempted to import '{0}' but script file "
                 "'{1}' has not been found".
                 format(filename, script_name))
         except SyntaxError:
-            raise GenerationError(
+            raise PythonException(
                 "generator: attempted to import '{0}' but script file "
                 "'{1}' is not valid python".
                 format(filename, script_name))
@@ -58,22 +60,19 @@ def run_script(script_name, xcodeml_ast):
                                                    exc_traceback)
                 e_str = '{\n' +\
                     ''.join('    ' + line for line in lines[2:]) + '}'
-                raise GenerationError(
+                raise PythonException(
                     "Generator: script file '{0}'\nraised the "
                     "following exception during execution "
                     "...\n{1}\nPlease check your script".format(
                         script_name, e_str))
         else:
-            raise GenerationError(
+            raise PythonException(
                 "generator: attempted to import '{0}' but script file "
                 "'{1}' does not contain a 'trans()' function".
                 format(filename, script_name))
-    except Exception as msg:
+    finally:
         if sys_path_appended:
             os.sys.path.pop()
-        raise msg
-    if sys_path_appended:
-        os.sys.path.pop()
 
     return xcodeml_ast
 
@@ -100,8 +99,6 @@ class ClawTransform(PythonInterface):
         :return: Transformed AST
         :rtype: claw.tatsu.xcodeml.xnode.common.XcodeProgram
         '''
-        print "Here we would import {0} and apply it to {1}".\
-            format(script_name, "some ast")
         transformed_ast = run_script(script_name, kernel_ast)
 
         return transformed_ast
