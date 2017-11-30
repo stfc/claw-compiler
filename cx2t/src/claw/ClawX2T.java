@@ -308,7 +308,6 @@ public class ClawX2T {
     }
 
     // Decompile XcodeML/F to target language
-    System.out.println("Getting OMNI backend...");
     OmniBackendDriver backend;
     if(Configuration.get().getCurrentTarget() == Target.FPGA) {
       // TODO remove when supported
