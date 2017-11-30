@@ -21,6 +21,7 @@ import claw.wani.x2t.configuration.GroupConfiguration;
 import xcodeml.util.XmOption;
 import claw.python.PythonInterface;
 import claw.python.PythonFactory;
+import claw.python.PythonException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -110,8 +111,11 @@ public class ClawExternalTranslatorDriver {
       // Write transformed IR to file
       _transformedUnit.write(_xcodemlOutputFile, ClawConstant.INDENT_OUTPUT);
 
-    } catch(Exception ex) {
-      System.err.println("Transformation exception: " + ex.getMessage());
+    } catch(PythonException ex) {
+	System.err.println("Error while attempting to run python script " +
+			   _transformScript + ": " + ex);
+    } catch(IllegalTransformationException tex){
+	System.err.println("Illegal transformation exception: " + tex);
     }
   }
 
