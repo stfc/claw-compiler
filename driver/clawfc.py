@@ -20,8 +20,18 @@ def claw_driver(argv):
     ''' Top level python driver for Claw compiler '''
     from subprocess import call
     from os import path
-    fortran_file = argv[0]
-    script_file = argv[1]
+
+    # Set-up command-line argument parser
+    import argparse
+    parser = argparse.ArgumentParser(description='Run Claw on a Fortran file')
+    parser.add_argument("filename", 
+                        help="Full path and name of target Fortran file")
+    parser.add_argument('-s', '--script', help='filename of a Claw'
+                        ' transformation script')
+    args = parser.parse_args(argv)
+
+    fortran_file = args.filename
+    script_file = args.script
     print "Processing file {0} using recipe {1}".format(fortran_file,
                                                         script_file)
     # Use the OMNI frontend to generate the XcodeML representation of
@@ -35,7 +45,7 @@ def claw_driver(argv):
         output_fortran_file = input_fortran_file.replace(".f90", ".new.f90", 1)
     else:
         raise Exception("Fortran file must have .f90 or .F90 suffix but "
-                        "got {0}".format(xml_file))
+                        "got {0}".format(input_fortran_file))
 
     xml_file = path.join(dir_path, xml_file)
     output_fortran_file = path.join(dir_path, output_fortran_file)
