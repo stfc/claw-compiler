@@ -1,24 +1,8 @@
+from claw_config import *
 
-OMNI_JAR_FILES = ["/home/kbc59144/MyInstalls/share/xcalablemp/om-exc-tools.jar",
-                  "/home/kbc59144/MyInstalls/share/xcalablemp/om-common.jar",
-                  "/home/kbc59144/MyInstalls/share/xcalablemp/om-f-back.jar",
-                  "/home/kbc59144/MyInstalls/share/xcalablemp/om-c-back.jar"]
-CLAW_JAR_FILES = ["/home/kbc59144/MyInstalls/share/claw/om-cx2x-claw.jar",
-                  "/home/kbc59144/MyInstalls/share/claw/commons-cli.jar",
-                  "/home/kbc59144/MyInstalls/share/claw/om-cx2x-xcodeml.jar",
-                  "/home/kbc59144/MyInstalls/share/claw/antlr4.jar",
-                  "/home/kbc59144/MyInstalls/share/claw/antlr4-runtime.jar"]
-JYTHON_JAR = "/home/kbc59144/MyInstalls/jython2.7.0/jython.jar"
-
-JAR_FILES = OMNI_JAR_FILES + CLAW_JAR_FILES + [JYTHON_JAR]
-CLASS_PATH = ":".join(JAR_FILES)
-
-CLAW_CONFIG_FILE = "/home/kbc59144/MyInstalls/etc"
-NUM_OUTPUT_COLUMNS = 80
 
 def claw_driver(argv):
     ''' Top level python driver for Claw compiler '''
-    from subprocess import call
     from os import path
 
     # Set-up command-line argument parser
@@ -34,9 +18,17 @@ def claw_driver(argv):
     script_file = args.script
     print "Processing file {0} using recipe {1}".format(fortran_file,
                                                         script_file)
+    transform_kernel(fortran_file, script_file)
+
+
+def transform_kernel(fort_file, script_file):
+    '''
+    '''
+    from subprocess import call
+    from os import path
     # Use the OMNI frontend to generate the XcodeML representation of
     # the Fortran file
-    (dir_path, input_fortran_file) = path.split(fortran_file)
+    (dir_path, input_fortran_file) = path.split(fort_file)
     if input_fortran_file.endswith(".F90"):
         xml_file = input_fortran_file.replace(".F90", ".xml", 1)
         output_fortran_file = input_fortran_file.replace(".F90", ".new.F90", 1)
@@ -50,7 +42,7 @@ def claw_driver(argv):
     xml_file = path.join(dir_path, xml_file)
     output_fortran_file = path.join(dir_path, output_fortran_file)
 
-    call(["F_Front", fortran_file, "-o", str(xml_file)])
+    call(["F_Front", fort_file, "-o", str(xml_file)])
     print "Produced XCodeML file: {0}".format(xml_file)
 
     # Then transform this XcodeML representation using CLAW and use OMNI to
@@ -68,5 +60,6 @@ def claw_driver(argv):
 
 
 if __name__ == "__main__":
+    ''' Entry point for this driver when run from command line '''
     import sys
     claw_driver(sys.argv[1:])
