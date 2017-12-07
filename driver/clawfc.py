@@ -1,3 +1,6 @@
+''' Top-level driver script allowing the Claw compiler to be executed from
+either the command-line or from other Python code '''
+
 from claw_config import *
 
 
@@ -23,6 +26,8 @@ def claw_driver(argv):
 
 def transform_kernel(fort_file, script_file):
     '''
+    :param str fort_file: The Fortran file to transform
+    :param str script_file: The Jython script specifying the transformation(s)
     '''
     from subprocess import call
     from os import path
@@ -48,8 +53,9 @@ def transform_kernel(fort_file, script_file):
     # Then transform this XcodeML representation using CLAW and use OMNI to
     # de-compile it back to Fortran
     call(["/usr/bin/java", "-Xmx200m", "-Xms200m", "-cp", CLASS_PATH,
-          "claw.ClawX2T", "--config-path={0}".format(CLAW_CONFIG_FILE),
-          "--schema=/home/kbc59144/MyInstalls/etc/claw_config.xsd",
+          "claw.ClawX2T", "--config-path={0}".format(CLAW_CONFIG_FILE_DIR),
+          "--schema={0}".format(os.path.join(CLAW_CONFIG_FILE_DIR,
+                                             "claw_config.xsd")),
           "-w", str(NUM_OUTPUT_COLUMNS), "-l",
           "-M/home/kbc59144/Projects/code_fragments",
           "-M/home/kbc59144/MyInstalls/fincludes",

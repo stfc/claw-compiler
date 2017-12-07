@@ -1,16 +1,21 @@
+'''
+    Module containing configuration parameters detailing the locations
+    where CLAW and Jython are installed
+'''
+
 import os
 
-''' Module containing configuration parameters detailing the location
-    where CLAW is installed '''
+# Location of the Jython Jar
+JYTHON_JAR = "/home/kbc59144/MyInstalls/jython2.7.0/jython.jar"
+# Root directory of the CLAW installation
+CLAW_INSTALL_ROOT = "/home/kbc59144/MyInstalls"
 
 # Location of the CLAW configuration file (read by CLAW)
-CLAW_CONFIG_FILE = "/home/kbc59144/MyInstalls/etc"
+CLAW_CONFIG_FILE_DIR = os.path.join(CLAW_INSTALL_ROOT, "etc")
 # Width of output Fortran
 NUM_OUTPUT_COLUMNS = 80
 # Location that CLAW is installed to
-CLAW_INSTALL_PATH = "/home/kbc59144/MyInstalls/share"
-# Location of the Jython Jar
-JYTHON_JAR = "/home/kbc59144/MyInstalls/jython2.7.0/jython.jar"
+CLAW_INSTALL_PATH = os.path.join(CLAW_INSTALL_ROOT, "share")
 
 # The OMNI and CLAW jars
 OMNI_JARS = ["om-exc-tools.jar",
