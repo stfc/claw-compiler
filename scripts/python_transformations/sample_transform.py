@@ -8,7 +8,7 @@ def walk(xnode, level=0):
         walk(cnode, level+1)
         cnode = cnode.nextSibling()
 
-def trans(xast):
+def claw_trans(xast):
     '''
     '''
     from claw.tatsu.primitive import Loop
