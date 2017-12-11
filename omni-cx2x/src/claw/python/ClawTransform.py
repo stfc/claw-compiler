@@ -7,7 +7,7 @@ from claw.python import PythonInterface, PythonException
 
 def run_script(script_name, xcodeml_ast):
     '''
-    Imports the supplied python module and runs the 'trans'
+    Imports the supplied python module and runs the 'claw_trans'
     function defined within it.
     This code is lifted wholesale from PSyclone and I would
     have used it from PSyclone but that requires some
@@ -51,9 +51,9 @@ def run_script(script_name, xcodeml_ast):
                 "generator: attempted to import '{0}' but script file "
                 "'{1}' is not valid python".
                 format(filename, script_name))
-        if callable(getattr(transmod, 'trans', None)):
+        if callable(getattr(transmod, 'claw_trans', None)):
             try:
-                xcodeml_ast = transmod.trans(xcodeml_ast)
+                xcodeml_ast = transmod.claw_trans(xcodeml_ast)
             except Exception:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 lines = traceback.format_exception(exc_type, exc_value,
@@ -68,7 +68,7 @@ def run_script(script_name, xcodeml_ast):
         else:
             raise PythonException(
                 "generator: attempted to import '{0}' but script file "
-                "'{1}' does not contain a 'trans()' function".
+                "'{1}' does not contain a 'claw_trans()' function".
                 format(filename, script_name))
     finally:
         if sys_path_appended:
