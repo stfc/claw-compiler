@@ -32,7 +32,7 @@ import java.util.Map;
  * ClawExternalTranslatorDriver is the class that wraps the use of a Python
  * script in order to perform the translation.
  *
- * @author clementval
+ * @author A. R. Porter
  */
 public class ClawExternalTranslatorDriver {
 
