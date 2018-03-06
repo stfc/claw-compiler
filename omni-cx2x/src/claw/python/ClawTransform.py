@@ -55,6 +55,7 @@ def run_script(script_name, xcodeml_ast):
             try:
                 xcodeml_ast = transmod.claw_trans(xcodeml_ast)
             except Exception:
+                import traceback
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 lines = traceback.format_exception(exc_type, exc_value,
                                                    exc_traceback)
