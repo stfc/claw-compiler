@@ -1,14 +1,14 @@
 package claw.python;
 
 /* The Java definition of the interface implemented in Python */
-import claw.python.PythonInterface;
+import claw.python.PythonTransformInterface;
 
 /* These modules are provided by Jython */
 import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.util.PythonInterpreter;
 
-public class PythonFactory {
+public class PythonFactory implements PythonFactoryInterface {
 
     private PyObject transformClass;
 
@@ -21,7 +21,7 @@ public class PythonFactory {
      * it and assign the reference to a Java variable
      */
 
-    public PythonFactory() {
+    public void createTransformClass() {
         PythonInterpreter interpreter = new PythonInterpreter();
         interpreter.exec("from ClawTransform import ClawTransform");
         transformClass = interpreter.get("ClawTransform");
@@ -32,10 +32,10 @@ public class PythonFactory {
      * coercion of the referenced python module into Java bytecode
      */
 
-    public PythonInterface create (String name) {
+    public PythonTransformInterface createTransform (String name) {
 
         PyObject transformObject = transformClass.__call__(new PyString(name));
-        return (PythonInterface)transformObject.__tojava__(PythonInterface.class);
+        return (PythonTransformInterface)transformObject.__tojava__(PythonTransformInterface.class);
     }
 
 }

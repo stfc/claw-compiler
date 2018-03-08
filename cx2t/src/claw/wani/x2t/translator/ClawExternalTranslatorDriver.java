@@ -19,14 +19,18 @@ import claw.wani.transformation.ClawTransformation;
 import claw.wani.x2t.configuration.Configuration;
 import claw.wani.x2t.configuration.GroupConfiguration;
 import xcodeml.util.XmOption;
-import claw.python.PythonInterface;
-import claw.python.PythonFactory;
+import claw.python.PythonTransformInterface;
+import claw.python.PythonFactoryInterface;
 import claw.python.PythonException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.Map;
+
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
  * ClawExternalTranslatorDriver is the class that wraps the use of a Python
@@ -42,8 +46,8 @@ public class ClawExternalTranslatorDriver {
   private boolean _canTransform = false;
   private XcodeProgram _translationUnit = null;
   // Factory to create our transformation object
-  private PythonFactory _factory = null;
-  private PythonInterface _transform = null;
+  private PythonFactoryInterface _factory = null;
+  private PythonTransformInterface _transform = null;
 
   /**
    * ClawExternalTranslatorDriver constructor.
@@ -60,13 +64,21 @@ public class ClawExternalTranslatorDriver {
     _transformScript = transScript;
     _xcodemlInputFile = xcodemlInputFile;
     _xcodemlOutputFile = xcodemlOutputFile;
+    
     System.out.println("Creating factory object");
-    _factory = new PythonFactory();
+
+    // Dynamically load our PythonFactory from file - avoids compile-time
+    // dependence on Jython
+    File authorizedJarFile = new File("PythonFactory.jar");
+    ClassLoader authorizedLoader = URLClassLoader.newInstance(new URL[] { authorizedJarFile.toURL() });
+    PythonFactoryInterface _factory = (PythonFactoryInterface) authorizedLoader.loadClass("claw.python.PythonFactory").newInstance();
+    _factory.createTransformClass();
+    //_factory = new PythonFactory();
     // The string passed to the factory here is just an example of
     // passing an argument in to the constructor - it serves no
     // purpose!
     System.out.println("Creating transform object...");
-    _transform = _factory.create("my_transform");
+    _transform = _factory.createTransform("my_transform");
     System.out.println("...constructor finished!");
   }
 
