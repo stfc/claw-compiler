@@ -16,6 +16,8 @@ import claw.wani.x2t.translator.ClawExternalTranslatorDriver;
 import exc.xcodeml.XcodeMLtools_Fmod;
 import org.apache.commons.cli.*;
 import xcodeml.util.XmOption;
+// TODO get rid of this by having an abstract TranslatorDriver class?
+import claw.tatsu.xcodeml.xnode.common.XcodeProgram;
 
 import java.io.File;
 
@@ -151,6 +153,7 @@ public class ClawX2T {
     String recipeScript = null;
     int maxColumns = 0;
     //boolean forcePure = false;
+    XcodeProgram tunit;
 
     CommandLine cmd;
     try {
@@ -291,6 +294,7 @@ public class ClawX2T {
           new ClawExternalTranslatorDriver(recipeScript, input, xcmlOutput);
       pythonDriver.analyze();
       pythonDriver.transform();
+      tunit = pythonDriver.getTranslationUnit();
 
     } else {
       ClawTranslatorDriver translatorDriver =
@@ -298,7 +302,8 @@ public class ClawX2T {
       translatorDriver.analyze();
       translatorDriver.transform();
       translatorDriver.flush();
-
+      tunit = translatorDriver.getTranslationUnit();
+      
       // Produce report
       if(cmd.hasOption("r")) {
         ClawTransformationReport report =
@@ -319,7 +324,7 @@ public class ClawX2T {
 
     if(xcmlOutput == null) { // XcodeML output not written to file. Use pipe.
       if(!backend.decompile(targetLangOutput,
-          translatorDriver.getTranslationUnit(), maxColumns,
+          tunit, maxColumns,
           XmOption.isSuppressLineDirective()))
       {
         error(targetLangOutput, 0, 0, "Unable to decompile XcodeML to Fortran");
