@@ -82,10 +82,10 @@
              includes="claw/shenron/**"/>
         <!-- CLAW X2T WANI -->
         <jar jarfile="${dist.dir}/${claw.wani.jar}" basedir="${build.dir}"
-             includes="claw/ClawX2T.class claw/ClawVersion.class claw/wani/**"/>
+             includes="claw/ClawX2T.class claw/ClawVersion.class claw/wani/** claw/python/**"/>
         <!-- CLAW-Python interface -->
-        <jar jarfile="${dist.dir}/${claw.python.jar}" basedir="${build.dir}"
-             includes="claw/python/**"/>
+        <!--jar jarfile="${dist.dir}/${claw.python.jar}" basedir="${build.dir}"
+             includes="claw/python/**"-->
         <jar jarfile="${dist.dir}/${external.jar}" basedir="${build.dir}"
              includes="external/**"/>
     </target>

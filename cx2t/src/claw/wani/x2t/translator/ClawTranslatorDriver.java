@@ -218,7 +218,7 @@ public class ClawTranslatorDriver {
   /**
    * Print all the errors stored in the XcodeML object and abort the program.
    */
-  private void abort() {
+  protected void abort() {
     Message.errors(_translationUnit);
     System.exit(1);
   }
