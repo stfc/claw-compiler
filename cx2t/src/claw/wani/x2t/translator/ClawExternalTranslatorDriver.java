@@ -67,9 +67,15 @@ public class ClawExternalTranslatorDriver {
     
     System.out.println("Creating factory object");
 
+    // Read the environment variable for external transformation sets
+    String pythonTransJar = System.getenv("CLAW_PYTHON_JAR");
+    if(pythonTransJar == null){
+	System.out.println("ERROR HERE");
+    }
+
     // Dynamically load our PythonFactory from file - avoids compile-time
     // dependence on Jython
-    File authorizedJarFile = new File("PythonFactory.jar");
+    File authorizedJarFile = new File(pythonTransJar);
     ClassLoader authorizedLoader = URLClassLoader.newInstance(new URL[] { authorizedJarFile.toURL() });
     PythonFactoryInterface _factory = (PythonFactoryInterface) authorizedLoader.loadClass("claw.python.PythonFactory").newInstance();
     _factory.createTransformClass();
