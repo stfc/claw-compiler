@@ -85,9 +85,15 @@
              includes="claw/ClawX2T.class claw/ClawVersion.class claw/wani/**"/>
         <!-- CLAW-Python interface -->
         <jar jarfile="${dist.dir}/${claw.translator.jar}" basedir="${build.dir}"
-             includes="claw/ClawX2T.class claw/ClawVersion.class claw/wani/** claw/shenron/** claw/python/**"/>
+             includes="claw/ClawX2T.class claw/ClawVersion.class claw/wani/** claw/shenron/** claw/python/PythonFactoryInterface.class claw/python/PythonTransformInterface.class claw/python/PythonException.class"/>
         <jar jarfile="${dist.dir}/${external.jar}" basedir="${build.dir}"
              includes="external/**"/>
+    </target>
+
+    <target name="pyjar" depends="jar, jython"
+	    description="Output optional Python interface to jar">
+        <jar jarfile="${dist.dir}/${claw.python.jar}" basedir="${build.dir}"
+             includes="claw/python/PythonFactory.class"/>
     </target>
 
     <target name="clean" description="clean up">
