@@ -1,3 +1,7 @@
+/*
+ * This file is released under terms of BSD license
+ * See LICENSE file for more information
+ */
 package claw.python;
 
 /* The Java definition of the interface implemented in Python */
@@ -8,6 +12,11 @@ import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.util.PythonInterpreter;
 
+/**
+ * Class wrapping construction of Python interpreter
+ *
+ * @author A. R. Porter, STFC
+ */
 public class PythonFactory implements PythonFactoryInterface {
 
     private PyObject transformClass;
