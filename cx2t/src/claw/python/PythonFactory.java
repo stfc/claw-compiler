@@ -13,11 +13,15 @@ import org.python.core.PyObject;
  *
  * @author A. R. Porter, STFC
  */
-public class PythonFactory {
+public class PythonFactory implements PythonFactoryInterface {
 
     private PyObject transformClass;
 
-    public PythonFactory()
-    {
+    
+    public void createTransformClass() {
+    }
+    
+    public String createTransform(String name) {
+	return "";
     }
 }
