@@ -71,14 +71,16 @@
             description="compile the source">
         <javac includeantruntime="false" srcdir="${src.base}"
                destdir="${build.dir}" classpathref="build.path"
-	       excludes="claw/python/"/>
+	       excludes="claw/python/PythonFactory.java"
+	       debug="on" debuglevel="lines,source"/>
     </target>
 
     <!-- Compile the java plugin code that relies on Jython -->
     <target name="compile-plugin" depends="common.resolve"
             description="compile the plugin source">
         <javac includeantruntime="false" srcdir="${src.base}/claw/python/"
-               destdir="${build.dir}" classpathref="jython.path"/>
+               destdir="${build.dir}" classpathref="jython.path"
+	       debug="on" debuglevel="lines,source"/>
     </target>
 
     <!-- Pacakge compiled files into their own library -->
