@@ -40,25 +40,23 @@ public class ClawPythonTranslatorDriver extends ClawTranslatorDriver {
     System.out.println("Creating factory object");
 
     // Dynamically load our PythonFactory from file - avoids compile-time
-    // dependence on Jython
-    // Look-up the location of the jar file containing the plugin
+    // dependence on Jython. If Claw was built with Jython support then
+    // the PythonFactory class is built into the same Jar file that
+    // contains the definition of the factory interface.
     File pythonTransJar = new File(PythonFactoryInterface.class.getProtectionDomain().getCodeSource().getLocation().getPath());
     try {
       ClassLoader loader = URLClassLoader.newInstance(new URL[]
-	                                              { pythonTransJar.toURL() });
+	  { pythonTransJar.toURI().toURL() });
       PythonFactoryInterface _factory =
 	  (PythonFactoryInterface) loader.loadClass("claw.python.PythonFactory").newInstance();
-    } catch(MalformedURLException err) {
-      throw new Exception("Failed to create loader for "+pythonTransJar.getName());
+    } catch(MalformedURLException merr) {
+      throw new Exception("Failed to create loader for "+
+			  pythonTransJar.getName());
+    } catch(ClassNotFoundException cerr) {
+      throw new Exception("Jar "+pythonTransJar.getName()+
+			  " does not contain the claw.python.PythonFactory "+
+			  "class - did you compile Claw with Jython support?");
     }
-
-    //_factory.createTransformClass();
-    // The string passed to the factory here is just an example of
-    // passing an argument in to the constructor - it serves no
-    // purpose!
-    //System.out.println("Creating transform object...");
-    //_transform = _factory.createTransform("my_transform");
-    //System.out.println("...constructor finished!");
   }
 
   /**
